@@ -3,7 +3,7 @@ TRANSLITERATE = False
 
 
 def main():
-  james_file = open("james_greek.txt", "r")
+  james_file = open("john_greek.txt", "r")
   words = []
   print_chapters = [4]
   # print_chapters = [1,2,3,4,5]
