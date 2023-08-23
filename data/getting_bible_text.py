@@ -119,11 +119,13 @@ async def main(book_filename, book_number, num_chapters):
     print("Done")
 
 loop = asyncio.get_event_loop()
-#  {"bookid": 43, "name": "John", "chapters": 21},
+
+# History of prior jobs:
+# For {"bookid": 43, "name": "John", "chapters": 21} I ran:
 # loop.run_until_complete(main("john", 43, 21))
 
 #  {"bookid": 59, "name": "James", "chapters": 5},
-loop.run_until_complete(main("james", 59, 5))
+# loop.run_until_complete(main("james", 59, 5))
 
 #  {"bookid": 62, "name": "1 John", "chapters": 5},
 # loop.run_until_complete(main("1_john", 62, 5))
