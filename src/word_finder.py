@@ -3,19 +3,12 @@ TRANSLITERATE = False
 
 
 def main():
-  greek_text_file = open("john_greek.txt", "r")
+  greek_text_file = open("../data/john_greek.txt", "r")
   words = []
-  print_chapters = [4]
-  # print_chapters = [1,2,3,4,5]
-  counter = 0
   for line in greek_text_file:
     if TRANSLITERATE:
       line = unidecode.unidecode(line)
     words += line.split()
-    # if counter < 10:
-    #   print(line)
-    counter += 1
-
   greek_text_file.close()
 
   current_verse = "1:1"
@@ -69,6 +62,7 @@ def main():
       selection = AUTO_SELECTION
       print("Running auto selection", AUTO_SELECTION)
     if selection == "":
+      print("Goodbye")
       break
     elif selection == "0":
       potential_chaining_words(all_words)
