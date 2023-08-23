@@ -14,7 +14,7 @@
         "number": "g746"
       },
       {
-        "i": 14,
+        "i": 2,
         "text": "was",
         "word": "ἦν",
         "number": "g2258"
@@ -26,13 +26,13 @@
         "number": "g3588"
       },
       {
-        "i": 16,
+        "i": 4,
         "text": "the Word",
         "word": "λόγος",
         "number": "g3056"
       },
       {
-        "i": 12,
+        "i": 5,
         "text": "and",
         "word": "καὶ",
         "number": "g2532"
@@ -44,13 +44,13 @@
         "number": "g3588"
       },
       {
-        "i": 16,
+        "i": 7,
         "text": "the Word",
         "word": "λόγος",
         "number": "g3056"
       },
       {
-        "i": 14,
+        "i": 8,
         "text": "was",
         "word": "ἦν",
         "number": "g2258"
@@ -68,7 +68,7 @@
         "number": "g3588"
       },
       {
-        "i": 13,
+        "i": 11,
         "text": "God",
         "word": "θεὸς",
         "number": "g2316"
@@ -71386,7 +71386,7 @@
   {
     "verse": [
       {
-        "i": 18,
+        "i": 0,
         "text": "which",
         "word": "τοῦ",
         "number": "g3588"
@@ -71404,19 +71404,19 @@
         "number": "g25"
       },
       {
-        "i": 20,
+        "i": 3,
         "text": "me",
         "word": "με",
         "number": "g3165"
       },
       {
-        "i": 18,
+        "i": 4,
         "text": "which",
         "word": "τοῦ",
         "number": "g3588"
       },
       {
-        "i": 11,
+        "i": 5,
         "text": "sayings",
         "word": "λόγος",
         "number": "g3056"
@@ -71428,7 +71428,7 @@
         "number": "g3450"
       },
       {
-        "i": 14,
+        "i": 7,
         "text": "not",
         "word": "οὐκ",
         "number": "g3756"
@@ -74575,7 +74575,7 @@
         "number": "g3588"
       },
       {
-        "i": 22,
+        "i": 2,
         "text": "saying",
         "word": "λόγον",
         "number": "g3056"
@@ -74647,7 +74647,7 @@
         "number": "g846"
       },
       {
-        "i": 20,
+        "i": 14,
         "text": "If",
         "word": "εἰ",
         "number": "g1487"
@@ -74659,13 +74659,13 @@
         "number": "g1691"
       },
       {
-        "i": 19,
+        "i": 16,
         "text": "persecute",
         "word": "διώξουσιν·",
         "number": "g1377"
       },
       {
-        "i": 25,
+        "i": 17,
         "text": "also",
         "word": "καὶ",
         "number": "g2532"
@@ -74707,7 +74707,7 @@
         "number": "g3450"
       },
       {
-        "i": 28,
+        "i": 24,
         "text": "they have kept",
         "word": "τηρήσουσιν",
         "number": "g5083"

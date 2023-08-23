@@ -3,34 +3,26 @@ TRANSLITERATE = False
 
 
 def main():
-  james_file = open("john_greek.txt", "r")
+  greek_text_file = open("john_greek.txt", "r")
   words = []
   print_chapters = [4]
   # print_chapters = [1,2,3,4,5]
   counter = 0
-  for line in james_file:
+  for line in greek_text_file:
     if TRANSLITERATE:
       line = unidecode.unidecode(line)
     words += line.split()
+    # if counter < 10:
+    #   print(line)
     counter += 1
-    if 1 in print_chapters and counter < 29:
-      print(line.strip())
-    elif 2 in print_chapters and counter >= 29 and counter < 55:
-      print(line.strip())
-    elif 3 in print_chapters and counter >= 55 and counter < 73:
-      print(line.strip())
-    elif 4 in print_chapters and counter >= 73 and counter < 90:
-      print(line.strip())
-    elif 5 in print_chapters and counter >= 90:
-      print(line.strip())
 
-  james_file.close()
+  greek_text_file.close()
 
   current_verse = "1:1"
   all_words = []
   verse_words = []
   for word in words:
-    if "Jas" in word:
+    if "John" in word:
       continue
     if ":" in word:  # Add the prior verse only on next verse (not a great system)
       current_verse = word
@@ -38,7 +30,7 @@ def main():
       verse_words.clear()
       continue
     next_word = word.strip().lower()
-    for special_char in "⸂⸃·,.⸀":  # DIY regex
+    for special_char in "⸂⸃·,.⸀;":  # DIY regex
       next_word = next_word.replace(special_char, "")
     if len(next_word) > 0:
       verse_words.append(next_word + " " + current_verse)
@@ -46,10 +38,10 @@ def main():
 
   RUN_ONCE = False
   AUTO_SELECTION = None
-  AUTO_SELECTION = "7"  # sometimes I know what I want in advance.
+  # AUTO_SELECTION = "1"  # sometimes I know what I want in advance.
   print("0. Run the 'potential chaining words' script")
-  print("1. ἀδελφὸς - Brothers or sisters")
-  print("2. τέλειος - Perfect, mature, complete, whole")
+  print("1. τέλειος - Perfect, mature, complete, whole")
+  print("2. ἀδελφὸς - Brothers or sisters")
   print("3. γλῶσσαν - The tongue, language")
   print("4. ολος - whole")
   print("5. ὑπομονὴ - Perserverance, endurance")

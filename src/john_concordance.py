@@ -7,7 +7,7 @@ class GreekWord:
         """
          Creates a Greek Word using data available from the greek_concordance.json plus dictionary file.
          """
-        self.greek_word = greek_word
+        self.greek_word = greek_word.rstrip(",")
         self.english_text = english_text
         self.chapter = chapter
         self.verse = verse
@@ -31,8 +31,8 @@ def main():
 
     # find_strongs(all_words, ["g3956"], print_only=True) # All
     # find_strongs(all_words, ["g79", "g80"], print_only=True)  # adelphos
-    # find_strongs(all_words, ["g5046", "g5055", "g5056"], print_only=True)  # adelphos
-    find_strongs(all_words, ["g5046", "g5055", "g5056", "g658", "g5048"], print_only=True)  # adelphos + bonus
+    # find_strongs(all_words, ["g5046", "g5055", "g5056"], print_only=True)  # teleios
+    # find_strongs(all_words, ["g5046", "g5055", "g5056", "g658", "g5048"], print_only=True)  # teleios + bonus
     # find_strongs(all_words, ["g5046", "g5055", "g5056"], print_only=True)  # adelphos
     # find_strongs(all_words, ["g3648", "g3650"], print_only=True)  # Whole
     # find_strongs(all_words, ["g3986"], print_only=True)  # Trials
@@ -43,7 +43,36 @@ def main():
     # find_strongs(all_words, ["g1097"], print_only=True)  # Knowing ginosko
     # find_strongs(all_words, ["g1492"], print_only=True)  # Knowing eido
 
-    # print_range(all_words, ch=1, v=1, end_v=3)
+    # Interesting words:
+    # Jews, water, testimony, witness,
+    # Ginosko, telios (13:1),
+
+    # Teleios
+    # print("1. τέλειος - Perfect, mature, complete, whole")
+    # print("----------------- starts with")
+    # find_matches(all_words, ["τέλ", "τελ", "τετελε", "τετέλ"], starts_with_matches_only=True)
+    # print("-----------------")
+    # find_strongs(all_words, ["g5055", "g5056"], print_only=True)  # teleios
+    # print("-----------------")
+    # find_strongs(all_words, ["g5055", "g5056", "g5048"], print_only=True)  # teleios + bonus
+    # print("-----------------")
+
+    # print("2. ἀδελφὸς - Brothers or sisters")
+    # find_matches(all_words, ["ἀδελφ", "αδελφ"])
+    # find_strongs(all_words, ["g79", "g80"], print_only=True)  # adelphos
+    # print("-----------------")
+
+    print("17. λόγῳ - Word")
+    print("-----------------")
+    find_matches(all_words, ["λόγ", "λόγου", "λόγῳ", "λόγον","λογ"], starts_with_matches_only=True)
+    find_strongs(all_words, ["g3056"], print_only=True)  # word
+    print("-----------------")
+
+    print("18. νομος - Law")
+    # find_matches(all_words, ["νομος", "νομο", "νόμο", "νόμό", "νομό"])
+    print("-----------------")
+
+    # print_range(all_words, ch=18, v=28)
     # print_range(all_words, start_ch=1, start_v=2, end_ch=1, end_v=4)
     #print_section(all_words, 2.1)
 
@@ -115,14 +144,18 @@ def find_strongs(all_words: list[GreekWord], strongs_list, print_only=True):
     return greek_word_matches
 
 
-def find_matches(all_words: list[GreekWord], regex_matches, print_only=True):
+def find_matches(all_words: list[GreekWord], regex_matches, starts_with_matches_only=False, print_only=True):
     greek_word_matches = []
     hits = 1
     for word in all_words:
         found = False
         for match in regex_matches:
-            if match in word.greek_word.lower():
-                found = True
+            if starts_with_matches_only:
+                if word.greek_word.lower().startswith(match):
+                    found = True
+            else:
+                if match in word.greek_word.lower():
+                    found = True
         if found:
             if print_only:
                 print(f"{hits}. {word}")
