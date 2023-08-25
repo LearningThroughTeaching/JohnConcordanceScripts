@@ -3,7 +3,7 @@ TRANSLITERATE = False
 
 
 def main():
-  greek_text_file = open("../data/john_greek.txt", "r")
+  greek_text_file = open("../data/greek_text/john_greek.txt", "r")
   words = []
   for line in greek_text_file:
     if TRANSLITERATE:
@@ -56,8 +56,7 @@ def main():
   print("20. αὐτοῦ - His")
   while True:
     if AUTO_SELECTION is None:
-      print("Select an option or type a word:")
-      selection = input("Open or word: ")
+      selection = input("Select an option or type a word: ")
     else:
       selection = AUTO_SELECTION
       print("Running auto selection", AUTO_SELECTION)

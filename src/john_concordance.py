@@ -98,7 +98,7 @@ def print_section(all_words: list[GreekWord], section):
 
 
 def load_greek_concordance(concordance_filename):
-    greek_concordance_json_file = open(f"../data/{concordance_filename}")
+    greek_concordance_json_file = open(f"../data/greek_concordances/{concordance_filename}")
 
     verse_maps = json.load(greek_concordance_json_file)
     greek_words = []

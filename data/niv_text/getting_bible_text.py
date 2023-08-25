@@ -120,7 +120,11 @@ async def main(book_filename, book_number, num_chapters):
 
 loop = asyncio.get_event_loop()
 
-# History of prior jobs:
+# To add a book use this format...
+# loop.run_until_complete(main(book_filename, book_number, num_chapters):)
+
+
+# Examples: History of prior jobs:
 # For {"bookid": 43, "name": "John", "chapters": 21} I ran:
 # loop.run_until_complete(main("john", 43, 21))
 

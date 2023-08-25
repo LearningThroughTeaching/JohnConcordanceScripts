@@ -4,7 +4,7 @@ import json
 def main():
     book = "john"
     print(f"--- Printing {book.title()} NIV2011 ---")
-    all_chapters = load_niv(f"../data/{book}_niv.json")
+    all_chapters = load_niv(f"../data/niv_text/{book}_niv.json")
     # for chapter in all_chapters:
     #     print_chapter(book, chapter)
 
