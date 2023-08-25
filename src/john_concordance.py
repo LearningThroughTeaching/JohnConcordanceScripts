@@ -44,15 +44,13 @@ def main():
     # find_strongs(all_words, ["g1492"], print_only=True)  # Knowing eido
 
     # Interesting words:
-    # Jews, water, testimony, witness,
+    # Jews, water, testimony, witness, grace, Word (in caps in English),
     # Ginosko, telios (13:1),
 
     # Teleios
     # print("1. τέλειος - Perfect, mature, complete, whole")
     # print("----------------- starts with")
     # find_matches(all_words, ["τέλ", "τελ", "τετελε", "τετέλ"], starts_with_matches_only=True)
-    # print("-----------------")
-    # find_strongs(all_words, ["g5055", "g5056"], print_only=True)  # teleios
     # print("-----------------")
     # find_strongs(all_words, ["g5055", "g5056", "g5048"], print_only=True)  # teleios + bonus
     # print("-----------------")
@@ -62,14 +60,17 @@ def main():
     # find_strongs(all_words, ["g79", "g80"], print_only=True)  # adelphos
     # print("-----------------")
 
-    print("17. λόγῳ - Word")
-    print("-----------------")
-    find_matches(all_words, ["λόγ", "λόγου", "λόγῳ", "λόγον","λογ"], starts_with_matches_only=True)
-    find_strongs(all_words, ["g3056"], print_only=True)  # word
-    print("-----------------")
+    # print("17. λόγῳ - Word")
+    # print("-----------------")
+    # find_matches(all_words, ["λόγ", "λόγου", "λόγῳ", "λόγον","λογ"], starts_with_matches_only=True)
+    # print("-----------------")  # The on above finds the "spear" used to pierce his side
+    # find_strongs(all_words, ["g3056"], print_only=True)  # word
+    # print("-----------------")
 
     print("18. νομος - Law")
-    # find_matches(all_words, ["νομος", "νομο", "νόμο", "νόμό", "νομό"])
+    find_matches(all_words, ["νομ", "νομο", "νόμο", "νόμ", "νόμό", "νομό"], starts_with_matches_only=True)
+    print("-----------------")
+    find_strongs(all_words, ["g3551"], print_only=True)  # word
     print("-----------------")
 
     # print_range(all_words, ch=18, v=28)
