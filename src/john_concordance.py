@@ -3,19 +3,21 @@ import json
 
 class GreekWord:
 
-    def __init__(self, greek_word, english_text, chapter, verse, word_index, fisher_section, strongs_number, strongs_word, strongs_data):
+    def __init__(self, greek_word, english_text, chapter, verse, word_index, i, fisher_section, strongs_number, strongs_word, strongs_data):
         """
-         Creates a Greek Word using data available from the greek_concordance.json plus dictionary file.
+         Creates a Greek Word using data available from the _concordance.json (plus dictionary file optional addition).
          """
         self.greek_word = greek_word.rstrip(",")
         self.english_text = english_text
         self.chapter = chapter
         self.verse = verse
         self.word_index = word_index
+        self.i = i  # In the concordance data there is a field i which is almost word_index
+        # However, if the same word appears later in the verse, then i becomes that later word_index (ugh)
         self.fisher_section = fisher_section
         self.strongs_number = strongs_number
-        self.strongs_word = strongs_word
-        self.strongs_data = strongs_data
+        self.strongs_word = strongs_word  # Unused at present
+        self.strongs_data = strongs_data  # Unused at present
 
     @property
     def verse_index(self):
@@ -109,18 +111,20 @@ def load_greek_concordance(concordance_filename):
         current_fisher_section = get_fisher_section(current_chapter, current_verse)
         words = single_verse["verse"]
 
+        word_index = 0
         for json_word in words:
             greek_word = json_word["word"]
             english_text = json_word["text"]
             # chapter = chapter
             # verse = verse
-            word_index = json_word["i"]
+            i = json_word["i"]  # really not that useful, similar to word_index but different for repeated words (i becomes the final word_index)
             # fisher_section = fisher_section
             strongs_number = json_word["number"]
             # strongs_word = strongs_word
             # strongs_data = strongs_data
-            greek_word = GreekWord(greek_word, english_text, current_chapter, current_verse, word_index, current_fisher_section, strongs_number, None, None)
+            greek_word = GreekWord(greek_word, english_text, current_chapter, current_verse, word_index, i, current_fisher_section, strongs_number, None, None)
             greek_words.append(greek_word)
+            word_index += 1
 
     greek_concordance_json_file.close()
     return greek_words
