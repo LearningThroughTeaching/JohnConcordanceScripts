@@ -27,6 +27,69 @@ class GreekWord:
         return f"{self.greek_word} - {self.english_text} ({self.chapter}:{self.verse}.{self.word_index}) {self.strongs_number} T{self.fisher_section}"
 
 
+class StrongWord:
+
+    def __init__(self, dict_blob):
+        self.word = dict_blob["word"]
+        self.number = dict_blob["strongs"]
+        self.data = StrongsData(dict_blob["data"])
+
+    def __repr__(self):
+        return f"Dictionary info: {self.number} - {self.word} {self.data}"
+
+
+class StrongsData:
+
+    def __init__(self, data_blob):
+        self.comment = ""
+        if "comment" in data_blob:
+            self.comment = data_blob["comment"]
+
+        self.see = ""
+        if "see" in data_blob:
+            self.see = data_blob["see"]
+
+        self.deriv = ""
+        if "deriv" in data_blob:
+            self.deriv = data_blob["deriv"]
+
+        self.defs_short = []
+        self.defs_long = []
+        if "def" in data_blob:
+            defs = data_blob["def"]
+            if "short" in defs:
+                if isinstance(defs["short"], str):
+                    self.defs_short = [defs["short"]]
+                elif isinstance(defs["short"], list):
+                    self.defs_short = defs["short"]
+            if "long" in defs:
+                if isinstance(defs["long"], str):
+                    self.defs_long = [defs["long"]]
+                elif isinstance(defs["long"], list):
+                    self.defs_long = defs["long"]
+
+    def pretty_list(self, title, list_prop):
+        if len(list_prop) == 0:
+            return ""
+        if isinstance(list_prop, str):
+            return "\n  " + title + list_prop
+        if len(list_prop) == 1:
+            return "\n  " + title + list_prop[0]
+        list_str = "\n  " + title
+        for item in list_prop:
+            list_str += "\n    " + str(item)
+        return list_str
+
+    def __repr__(self):
+        display_str = ""
+        display_str += self.pretty_list("See - ", self.see)
+        display_str += self.pretty_list("Derived from - ", self.deriv)
+        display_str += self.pretty_list("Comment - ", self.comment)
+        display_str += self.pretty_list("Def Short - ", self.defs_short)
+        display_str += self.pretty_list("Def Long - ", self.defs_long)
+        return display_str
+
+
 class WordSearchOptions:
 
     def __init__(self, title, string_matches, strong_numbers):
@@ -48,21 +111,7 @@ def main():
     john_3_words = load_greek_concordance("3_john_concordance.json")
     revelation_words = load_greek_concordance("revelation_concordance.json")
 
-    # find_strongs(john_words, ["g3956"], print_only=True) # All
-
-
-    # find_strongs(john_words, ["g3648", "g3650"], print_only=True)  # Whole
-    # find_strongs(john_words, ["g3986"], print_only=True)  # Trials
-    # find_strongs(john_words, ["g3985"], print_only=True)  # Temptations (1)
-    # find_strongs(john_words, ["g551"], print_only=True)  # Temptations (2)
-    # find_strongs(john_words, ["g5278", "g5281" ], print_only=True)  # Perseverance
-    # find_strongs(john_words, ["g3985"], print_only=True)  # Perseverance
-    # find_strongs(john_words, ["g1097"], print_only=True)  # Knowing ginosko
-    # find_strongs(john_words, ["g1492"], print_only=True)  # Knowing eido
-
-    # Interesting words:
-    # Jews, water, testimony, witness, grace, Word (in caps in English),
-    # Ginosko, telios (13:1),
+    greek_dictionary_map = load_dictionary("greek.json")
 
     # Teleios
     three_word_banks = [james_words, john_words, john_1_words]
@@ -76,7 +125,7 @@ def main():
 
     word_searches = load_search_options()
     RUN_ONCE = False
-    AUTO_SELECTION = None
+    AUTO_SELECTION = None  # Note, do 1 less than the displayed prompt
     # AUTO_SELECTION = len(word_searches) - 1  # sometimes I know what I want in advance (0 based index number)
 
     while True:
@@ -94,7 +143,7 @@ def main():
             print("Running auto selection", AUTO_SELECTION)
 
         if selection < len(word_searches):
-                run_word_search(word_searches[selection], word_banks, word_bank_titles)
+            run_word_search(word_searches[selection], word_banks, word_bank_titles, greek_dictionary_map)
         else:
             print("Invalid selection")
 
@@ -144,10 +193,10 @@ def load_search_options():
     # word_searches.append(all_options)
 
     # More than 70
-    # jews_options = WordSearchOptions(title="Ἰουδαί - Jews",
-    #                                     string_matches=["Ἰουδα".lower()],
-    #                                     strong_numbers=["g2453"])
-    # word_searches.append(jews_options)
+    jews_options = WordSearchOptions(title="Ἰουδαί - Jews",
+                                        string_matches=["Ἰουδα".lower()],
+                                        strong_numbers=["g2453"])
+    word_searches.append(jews_options)
 
     # Only interesting in James
     # ginosko_options = WordSearchOptions(title="γινώσκοντες - Knowing / experiencing",
@@ -160,6 +209,35 @@ def load_search_options():
                                         string_matches=["ὥρα"],
                                         strong_numbers=["g5610"])
     word_searches.append(hour_options)
+
+    beginning_options = WordSearchOptions(title="ἀρχῇ - Beginning",
+                                        string_matches=["ἀρχὴ", "ἀρχῆ"],
+                                        strong_numbers=["g746", "g0756"])
+    word_searches.append(beginning_options)
+
+
+
+    god_options = WordSearchOptions(title="θεός - God",
+                                        string_matches=["θεός"],
+                                        strong_numbers=["g2316"])
+    word_searches.append(god_options)
+
+
+
+    lord_options = WordSearchOptions(title="κύριος - Lord",
+                                        string_matches=["κύριος"],
+                                        strong_numbers=["g2962"])
+    word_searches.append(lord_options)
+
+    jesus_options = WordSearchOptions(title="κύριος - Jesus",
+                                 string_matches=["Ἰησοῦ"],
+                                 strong_numbers=["g2424"])
+    word_searches.append(jesus_options)
+
+    christ_options = WordSearchOptions(title="Χριστός - Christ",
+                                        string_matches=["Χριστός"],
+                                        strong_numbers=["g5547", "g5548"])
+    word_searches.append(christ_options)
 
 
     # Interesting words to consider:
@@ -235,10 +313,13 @@ def load_search_options():
     return word_searches
 
 
-def run_word_search(search_options, concordance_words, concordance_titles):
+def run_word_search(search_options, concordance_words, concordance_titles, dictionary_map):
     print()
     print("--------------------------------------------------------------------")
     print(f"Start: {search_options.title}")
+    print("--------------------------------------------------------------------")
+    for strong_code in search_options.strong_numbers:
+        print(dictionary_map[strong_code])
     print("--------------------------------------------------------------------")
     print()
     if search_options.starts_with_matches_only:
@@ -281,6 +362,20 @@ def print_section(all_words: list[GreekWord], section):
     for word in all_words:
         if word.fisher_section == section:
             print(word)
+
+
+def load_dictionary(dictionary_filename):
+    dictionary_json_file = open(f"../data/dictionaries/{dictionary_filename}")
+
+    words_maps_list = json.load(dictionary_json_file)
+    dictionary_map = {}
+
+    for word_map in words_maps_list:
+        strong_word = StrongWord(word_map)
+        dictionary_map[strong_word.number] = strong_word
+
+    dictionary_json_file.close()
+    return dictionary_map
 
 
 def load_greek_concordance(concordance_filename):
@@ -340,10 +435,10 @@ def find_matches(all_words: list[GreekWord], regex_matches, starts_with_matches_
         found = False
         for match in regex_matches:
             if starts_with_matches_only:
-                if word.greek_word.lower().startswith(match):
+                if word.greek_word.lower().startswith(match.lower()):
                     found = True
             else:
-                if match in word.greek_word.lower():
+                if match.lower() in word.greek_word.lower():
                     found = True
         if found:
             if print_only:
