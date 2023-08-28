@@ -1,5 +1,7 @@
 import json
 
+RUN_ONCE = False
+AUTO_SELECTION = None  # Note, do 1 less than the displayed prompt
 
 class GreekWord:
 
@@ -120,12 +122,17 @@ def main():
     six_word_banks = [james_words, john_words, john_1_words, john_2_words, john_3_words, revelation_words]
     six_word_bank_titles = ["James", "John", "1st John", "2nd John", "3rd John", "Revelation"]
 
+    # printing the size of each book.
+    # James 1764, John 15,930, Johns=2185,249,218 Rev=9960
+    # for k in range(len(six_word_banks)):
+    #     print(f"{six_word_bank_titles[k]} - len = {len(six_word_banks[k])}")
+
     word_banks = six_word_banks
     word_bank_titles = six_word_bank_titles
 
     word_searches = load_search_options()
-    RUN_ONCE = False
-    AUTO_SELECTION = None  # Note, do 1 less than the displayed prompt
+
+    # Run most recent addtion to the word_searches.
     # AUTO_SELECTION = len(word_searches) - 1  # sometimes I know what I want in advance (0 based index number)
 
     while True:
@@ -210,6 +217,11 @@ def load_search_options():
                                         strong_numbers=["g5610"])
     word_searches.append(hour_options)
 
+    day_options = WordSearchOptions(title="ἡμέρα and ἐπαύριον - Day and Next day",
+                                        string_matches=["ἡμέρα", "ἐπαύριον"],
+                                        strong_numbers=["g2250", "g1887", "g1476", "g839", "g2250"])
+    word_searches.append(day_options)
+
     beginning_options = WordSearchOptions(title="ἀρχῇ - Beginning",
                                         string_matches=["ἀρχὴ", "ἀρχῆ"],
                                         strong_numbers=["g746", "g0756"])
@@ -229,7 +241,7 @@ def load_search_options():
                                         strong_numbers=["g2962"])
     word_searches.append(lord_options)
 
-    jesus_options = WordSearchOptions(title="κύριος - Jesus",
+    jesus_options = WordSearchOptions(title="Ἰησοῦ - Jesus",
                                  string_matches=["Ἰησοῦ"],
                                  strong_numbers=["g2424"])
     word_searches.append(jesus_options)
@@ -240,6 +252,10 @@ def load_search_options():
     word_searches.append(christ_options)
 
 
+    so_many_options = WordSearchOptions(title="τοσούτων - so many",
+                                        string_matches=["τοσούτω"],
+                                        strong_numbers=["g5118"])
+    word_searches.append(so_many_options)
     # Interesting words to consider:
     #  water, testimony, witness, grace, grace and truth, name
 
