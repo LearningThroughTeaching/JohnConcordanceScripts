@@ -2,6 +2,8 @@ import json
 
 RUN_ONCE = False
 AUTO_SELECTION = None  # Note, do 1 less than the displayed prompt
+USE_MOST_RECENT_SEARCH = False
+
 
 class GreekWord:
 
@@ -133,10 +135,12 @@ def main():
     word_searches = load_search_options()
 
     # Run most recent addtion to the word_searches.
-    # AUTO_SELECTION = len(word_searches) - 1  # sometimes I know what I want in advance (0 based index number)
+    auto_selection = AUTO_SELECTION
+    if USE_MOST_RECENT_SEARCH:
+        auto_selection = len(word_searches) - 1  # sometimes I know what I want in advance (0 based index number)
 
     while True:
-        if AUTO_SELECTION is None:
+        if auto_selection is None:
             for k in range(len(word_searches)):
                 print(f"{k + 1}. {word_searches[k].title}")
             selection = input("Select an option: ")
@@ -146,15 +150,15 @@ def main():
             if selection.isnumeric():
                 selection = int(selection) - 1  # Menu for humans is 1 based.
         else:
-            selection = AUTO_SELECTION
-            print("Running auto selection", AUTO_SELECTION)
+            selection = auto_selection
+            print("Running auto selection", auto_selection)
 
         if selection < len(word_searches):
             run_word_search(word_searches[selection], word_banks, word_bank_titles, greek_dictionary_map)
         else:
             print("Invalid selection")
 
-        if RUN_ONCE or AUTO_SELECTION is not None:
+        if RUN_ONCE or auto_selection is not None:
             break  # Just do 1 run
         print("-----------------------------")
 
@@ -206,10 +210,10 @@ def load_search_options():
     word_searches.append(jews_options)
 
     # Only interesting in James
-    # ginosko_options = WordSearchOptions(title="γινώσκοντες - Knowing / experiencing",
-    #                                     string_matches=["γινωσκω", "γινωσκέτω", "γιν", "γνῶναι"],
-    #                                     strong_numbers=["g1097"])
-    # word_searches.append(ginosko_options)
+    ginosko_options = WordSearchOptions(title="γινώσκοντες - Knowing / experiencing",
+                                        string_matches=["γινωσκω", "γινωσκέτω", "γιν", "γνῶναι"],
+                                        strong_numbers=["g1097"])
+    word_searches.append(ginosko_options)
 
     # Only interesting in John (10 in Rev)
     hour_options = WordSearchOptions(title="ὥρα - Hour ",
@@ -256,13 +260,189 @@ def load_search_options():
                                         string_matches=["τοσούτω"],
                                         strong_numbers=["g5118"])
     word_searches.append(so_many_options)
+
+    through_options = WordSearchOptions(title="through - δια",
+                                        string_matches=["δια"],
+                                        strong_numbers=["g1223"])
+    word_searches.append(through_options)
+
+
+    witness_options = WordSearchOptions(title="μαρτυρια - Witness",
+                                        string_matches=["μαρ", "μαρτυ", "ἐμαρτ", "μεμαρτ"],
+                                        strong_numbers=["g3140", "g3141"])
+    word_searches.append(witness_options)
+
+    come_options = WordSearchOptions(title="ερχομα - come",
+                                        string_matches=["ερχ"],
+                                        strong_numbers=["g2064"])
+    word_searches.append(come_options)
+
+    sent_options = WordSearchOptions(title="αποστελλω [apostello] sent and πεθπω sent- 1:6, 1:19, 1:24",
+                                        string_matches=["αποσ", "πεθπω", "διδωμι"],
+                                        strong_numbers=["g649", "g3992", "g1325"])
+    word_searches.append(sent_options)
+
+    sign_options = WordSearchOptions(title="σημεῖον - sign, mark, that which distinguishes(miracle)",
+                                        string_matches=["σημε"],
+                                        strong_numbers=["g4592"])
+    word_searches.append(sign_options)
+
+    amen_options = WordSearchOptions(title="Ἀμὴν ἀμὴν - Amen, amen Verily Verily",
+                                        string_matches=["Ἀμὴν ἀμὴν"],
+                                        strong_numbers=["g281"])
+    word_searches.append(amen_options)
+
+    desired_wanted_purposed_options = WordSearchOptions(title="θέλω desired wanted purposed",
+                                        string_matches=["θέλω"],
+                                        strong_numbers=["g2309"])
+    word_searches.append(desired_wanted_purposed_options)
+
+    made_options = WordSearchOptions(title="γινομαι - ginomai made",
+                                        string_matches=["γέγο", "ἐγέ", "γενέ", "Ἐγέ", "γεγ"],
+                                        strong_numbers=["g1096", "g1080"])
+    made_options.starts_with_matches_only = False
+    word_searches.append(made_options)
+
+    born_options = WordSearchOptions(title="γεννάω - gennao born",
+                                        string_matches=["γενν", "ἐγεννή"],
+                                        strong_numbers=["g1080"])
+    word_searches.append(born_options)
+
+    begotten_options = WordSearchOptions(title="μονογενής - monogenes one and only begotten",
+                                        string_matches=["μονογεν"],
+                                        strong_numbers=["g3439"])
+    word_searches.append(begotten_options)
+
+    # 1. μονογενοῦς - of the only begotten (1:14.16) g3439 T1.1
+    # 2. μονογενὴς - the only begotten (1:18.5) g3439 T1.1
+    # 3. μονογενῆ - only begotten (3:16.12) g3439 T2.0
+    # 4. μονογενοῦς - of the only begotten (3:18.19) g3439 T2.0
+
+    begotten_and_others_options = WordSearchOptions(title="μονογενής - monogenes and others",
+                                        string_matches=["γεννή", "γενοῦ", "γενὴ", "γενῆ", "γενοῦ"],
+                                        strong_numbers=["g3439", "g3439", "g1080", "g4773"])
+
+    begotten_and_others_options.starts_with_matches_only = False
+    word_searches.append(begotten_and_others_options)
+
+    wind_spirit_options = WordSearchOptions(title="πνεῦμα - pneuma wind spirit Spirit",
+                                        string_matches=["πνεῦμα"],
+                                        strong_numbers=["g4151"])
+    word_searches.append(wind_spirit_options)
+
+
+    water_options = WordSearchOptions(title="ὕδατος - water",
+                                        string_matches=["ὕδατ", "νερο", "νεπό"],
+                                        strong_numbers=["g5204", "g5201", "g5202", "g5203", "g504"])
+    word_searches.append(water_options)
+
+
+    believes_options = WordSearchOptions(title="πιστεύων - beleives",
+                                        string_matches=["πιστεύων"],
+                                        strong_numbers=["g4100"])
+    word_searches.append(believes_options)
+
+    anothen_options = WordSearchOptions(title="ἄνωθεν - anothen above",
+                                        string_matches=["ἄνωθ"],
+                                        strong_numbers=["g509"])
+    word_searches.append(anothen_options)
+
+
+    love_agape_options = WordSearchOptions(title="ἀγαπάω - to love",
+                                        string_matches=["ἀγαπ"],
+                                        strong_numbers=["g25", "g5368"])
+    word_searches.append(love_agape_options)
+
+
+    anthropos_options = WordSearchOptions(title="ανθρωπος - anthropos man",
+                                        string_matches=["ἄανθρωπ"],
+                                        strong_numbers=["g444"])
+    word_searches.append(anthropos_options)
+
+    men_options = WordSearchOptions(title="ανθρωπος - anthropos man and aner man",
+                                        string_matches=["ἄανθρωπ"],
+                                        strong_numbers=["g444", "g435", "g3700"])
+    word_searches.append(men_options)
+
+    lifted_up_options = WordSearchOptions(title="ὐψόω hupsoo - lifted_up",
+                                        string_matches=["ὐψόω"],
+                                        strong_numbers=["g5312"])
+    word_searches.append(lifted_up_options)
+
+    father_options = WordSearchOptions(title="πατήρ - Father, father",
+                                        string_matches=["πατ"],
+                                        strong_numbers=["g3962"])
+    word_searches.append(father_options)
+
+    seek_options = WordSearchOptions(title="ζητέω - seeks",
+                                        string_matches=["ζητέ"],
+                                        strong_numbers=["g2212"])
+    word_searches.append(seek_options)
+
+    draw_options = WordSearchOptions(title="ἄντλημα ἀντλέω - draw",
+                                        string_matches=["ἄντλημα"],
+                                        strong_numbers=["g502", "g501"])
+    word_searches.append(draw_options)
+
+    hour_options = WordSearchOptions(title="ὤρα - Hour",
+                                        string_matches=["ὤρα"],
+                                        strong_numbers=["g5610"])
+    word_searches.append(hour_options)
+
+    reaps_options = WordSearchOptions(title="θερίζω - reaps",
+                                        string_matches=["θερίζ"],
+                                        strong_numbers=["g2325"])
+    word_searches.append(reaps_options)
+
+    sows_options = WordSearchOptions(title="σπείρω - sows",
+                                        string_matches=["σπείρ"],
+                                        strong_numbers=["g4687"])
+    word_searches.append(sows_options)
+
+    worship_options = WordSearchOptions(title="προσκυνέω – worship",
+                                        string_matches=["προσκ"],
+                                        strong_numbers=["g4352", "g4353"])
+    word_searches.append(worship_options)
+
+
+    mother_options = WordSearchOptions(title="προσκυνέω – mother",
+                                        string_matches=["προσκ"],
+                                        strong_numbers=["g4352", "g4353"])
+    word_searches.append(mother_options)
+
+    believe_options = WordSearchOptions(title=" πιστεύ – faith / believe / trust",
+                                        string_matches=["πιστεύ"],
+                                        strong_numbers=["g4100", "g4102"])
+    word_searches.append(believe_options)
+
+    rejoiced_options = WordSearchOptions(title="  – rejoice and be glad",
+                                        string_matches=[""],
+                                        strong_numbers=[""])
+    word_searches.append(rejoiced_options)
+
+    ch11_come_options = WordSearchOptions(title=" - Come (come and see)",
+                                        string_matches=[""],
+                                        strong_numbers=[""])
+    word_searches.append(ch11_come_options)
+
+    ch11_see_options = WordSearchOptions(title=" - See (come and see)",
+                                          string_matches=[""],
+                                          strong_numbers=[""])
+    word_searches.append(ch11_see_options)
+
+    ch11_remove = WordSearchOptions(title=" - Remove (raise off)",
+                                          string_matches=[""],
+                                          strong_numbers=[""])
+    word_searches.append(ch11_remove)
+
+    glory_searches = WordSearchOptions(title="δοξάζω - Glory, glorify",
+                                          string_matches=["δοξάζ"],
+                                          strong_numbers=["g1391", "g1392"])
+    word_searches.append(glory_searches)
+
     # Interesting words to consider:
     #  water, testimony, witness, grace, grace and truth, name
 
-    # _options = WordSearchOptions(title="",
-    #                                     string_matches=[""],
-    #                                     strong_numbers=[""])
-    # word_searches.append(_options)
 
     # _options = WordSearchOptions(title="",
     #                                     string_matches=[""],
@@ -432,7 +612,7 @@ def find_strongs(all_words: list[GreekWord], strongs_list, print_only=True):
     for word in all_words:
         found = False
         for strongs_number in strongs_list:
-            if strongs_number in word.strongs_number and word.verse_index != prior_verse_index:
+            if strongs_number == word.strongs_number and word.verse_index != prior_verse_index:
                 found = True
                 prior_verse_index = word.verse_index
         if found:
