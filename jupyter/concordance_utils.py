@@ -1,109 +1,52 @@
 import json
+from greek_word import GreekWord
+from word_search_options import WordSearchOptions
+from strong_word import StrongWord
 
-RUN_ONCE = False
-AUTO_SELECTION = None  # Note, do 1 less than the displayed prompt
-USE_MOST_RECENT_SEARCH = False
+def load_greek_concordance(concordance_filename):
+    greek_concordance_json_file = open(f"../data/greek_concordances/{concordance_filename}")
 
+    verse_maps = json.load(greek_concordance_json_file)
+    greek_words = []
 
-class GreekWord:
+    for single_verse in verse_maps:
+        current_chapter = int(single_verse["id"][2:5])
+        current_verse = int(single_verse["id"][5:])
+        # current_fisher_section = get_fisher_section(concordance_filename, current_chapter, current_verse)
+        current_fisher_section = 0  # TODO: Implement this in John (sections 1:1-1:18, 1:19-4, 5-10, 11-12, 13-17, 18-20, 21)
+        words = single_verse["verse"]
 
-    def __init__(self, greek_word, english_text, chapter, verse, word_index, i, fisher_section, strongs_number, strongs_word, strongs_data):
-        """
-         Creates a Greek Word using data available from the _concordance.json (plus dictionary file optional addition).
-         """
-        self.greek_word = greek_word.rstrip(",")
-        self.english_text = english_text
-        self.chapter = chapter
-        self.verse = verse
-        self.word_index = word_index
-        self.i = i  # In the concordance data there is a field i which is almost word_index
-        # However, if the same word appears later in the verse, then i becomes that later word_index (ugh)
-        self.fisher_section = fisher_section
-        self.strongs_number = strongs_number
-        self.strongs_word = strongs_word  # Unused at present
-        self.strongs_data = strongs_data  # Unused at present
+        word_index = 0
+        for json_word in words:
+            greek_word = json_word["word"]
+            english_text = json_word["text"]
+            i = json_word["i"]  # really not that useful, similar to word_index but different for repeated words (i becomes the final word_index)
+            strongs_number = json_word["number"]
+            greek_word = GreekWord(greek_word, english_text, current_chapter, current_verse, word_index, i, current_fisher_section, strongs_number, None, None)
+            greek_words.append(greek_word)
+            word_index += 1  # The useful equivalent of i (see above), unique for each word in the verse.
 
-    @property
-    def verse_index(self):
-        return f"{self.chapter}:{self.verse}.{self.word_index}"
-
-    def __repr__(self):
-        return f"{self.greek_word} - {self.english_text} ({self.chapter}:{self.verse}.{self.word_index}) {self.strongs_number} T{self.fisher_section}"  # TODO: Add verse snippets.  TODO: Use NIV!
-
-
-class StrongWord:
-
-    def __init__(self, dict_blob):
-        self.word = dict_blob["word"]
-        self.number = dict_blob["strongs"]
-        self.data = StrongsData(dict_blob["data"])
-
-    def __repr__(self):
-        return f"Dictionary info: {self.number} - {self.word} {self.data}"
+    greek_concordance_json_file.close()
+    return greek_words
 
 
-class StrongsData:
-
-    def __init__(self, data_blob):
-        self.comment = ""
-        if "comment" in data_blob:
-            self.comment = data_blob["comment"]
-
-        self.see = ""
-        if "see" in data_blob:
-            self.see = data_blob["see"]
-
-        self.deriv = ""
-        if "deriv" in data_blob:
-            self.deriv = data_blob["deriv"]
-
-        self.defs_short = []
-        self.defs_long = []
-        if "def" in data_blob:
-            defs = data_blob["def"]
-            if "short" in defs:
-                if isinstance(defs["short"], str):
-                    self.defs_short = [defs["short"]]
-                elif isinstance(defs["short"], list):
-                    self.defs_short = defs["short"]
-            if "long" in defs:
-                if isinstance(defs["long"], str):
-                    self.defs_long = [defs["long"]]
-                elif isinstance(defs["long"], list):
-                    self.defs_long = defs["long"]
-
-    def pretty_list(self, title, list_prop):
-        if len(list_prop) == 0:
-            return ""
-        if isinstance(list_prop, str):
-            return "\n  " + title + list_prop
-        if len(list_prop) == 1:
-            return "\n  " + title + list_prop[0]
-        list_str = "\n  " + title
-        for item in list_prop:
-            list_str += "\n    " + str(item)
-        return list_str
-
-    def __repr__(self):
-        display_str = ""
-        display_str += self.pretty_list("See - ", self.see)
-        display_str += self.pretty_list("Derived from - ", self.deriv)
-        display_str += self.pretty_list("Comment - ", self.comment)
-        display_str += self.pretty_list("Def Short - ", self.defs_short)
-        display_str += self.pretty_list("Def Long - ", self.defs_long)
-        return display_str
-
-
-class WordSearchOptions:
-
-    def __init__(self, title, string_matches, strong_numbers):
-        self.title = title
-        self.string_matches = string_matches
-        self.strong_numbers = strong_numbers
-        self.starts_with_matches_only = True
-
-    def __repr__(self):
-        return self.title
+def find_strongs(all_words: list[GreekWord], strongs_list, print_only=True):
+    greek_word_matches = []
+    hits = 1
+    prior_verse_index = None
+    for word in all_words:
+        found = False
+        for strongs_number in strongs_list:
+            if strongs_number == word.strongs_number and word.verse_index != prior_verse_index:
+                found = True
+                prior_verse_index = word.verse_index
+        if found:
+            if print_only:
+                print(f"    {hits}. {word}")
+                hits += 1
+            else:
+                greek_word_matches.append(word)
+    return greek_word_matches
 
 
 def main():
@@ -338,7 +281,7 @@ def load_search_options():
 
 
     believes_options = WordSearchOptions(title="πιστεύων - beleives",
-                                        string_matches=["πιστ", "πεπιστ"],
+                                        string_matches=["πιστεύων"],
                                         strong_numbers=["g4100"])
     word_searches.append(believes_options)
 
@@ -430,14 +373,6 @@ def load_search_options():
                                           strong_numbers=[""])
     word_searches.append(ch11_see_options)
 
-
-    ch11_see_options = WordSearchOptions(title="ἐλήλυθα - Exact match",
-                                          string_matches=["ἐλήλυθα", "ἐλήλυθα"],
-                                          strong_numbers=["g2064"])
-    word_searches.append(ch11_see_options)
-
-
-
     ch11_remove = WordSearchOptions(title=" - Remove (raise off)",
                                           string_matches=[""],
                                           strong_numbers=[""])
@@ -458,39 +393,6 @@ def load_search_options():
                                           string_matches=["μον", "μέν", "μεν"],
                                           strong_numbers=["g3438", "g3306"])
     word_searches.append(stay_remain_continue_searches)
-
-    manifested_searches = WordSearchOptions(title="φανερόω - Manifest, make known",
-                                          string_matches=["φανε"],
-                                          strong_numbers=["g5319", "g5320"])
-    word_searches.append(manifested_searches)
-
-
-    garden_searches = WordSearchOptions(title="κήπῳ - Garden",
-                                          string_matches=["κῆπ", "κήπ", "κηπ", "γεωργ"],
-                                          strong_numbers=["g2779", "g2780", "g1092"])
-    word_searches.append(garden_searches)
-
-
-    where_searches = WordSearchOptions(title="πόθεν - where",
-                                          string_matches=["πὀθ", "πόθ"],
-                                          strong_numbers=["g4159"])
-    word_searches.append(where_searches)
-
-    saw_searches = WordSearchOptions(title=" ειδεν - saw (mainly for ch 20)",
-                                          string_matches=["ειδεν"],
-                                          strong_numbers=["g991", "g2334", "g1492", "g3708"])
-    word_searches.append(saw_searches)
-
-    insides_searches = WordSearchOptions(title="αθτοθς - homes?",
-                                          string_matches=["αθτοθς"],
-                                          strong_numbers=["g848"])
-    word_searches.append(insides_searches)
-
-
-    things_searches = WordSearchOptions(title="ταῦτα - these things",
-                                          string_matches=["ταῦτα"],
-                                          strong_numbers=["g3778", "g5023"])
-    word_searches.append(things_searches)
 
     # Interesting words to consider:
     #  water, testimony, witness, grace, grace and truth, name
@@ -624,56 +526,6 @@ def load_dictionary(dictionary_filename):
 
     dictionary_json_file.close()
     return dictionary_map
-
-
-def load_greek_concordance(concordance_filename):
-    greek_concordance_json_file = open(f"../data/greek_concordances/{concordance_filename}")
-
-    verse_maps = json.load(greek_concordance_json_file)
-    greek_words = []
-
-    for single_verse in verse_maps:
-        current_chapter = int(single_verse["id"][2:5])
-        current_verse = int(single_verse["id"][5:])
-        current_fisher_section = get_fisher_section(concordance_filename, current_chapter, current_verse)
-        words = single_verse["verse"]
-
-        word_index = 0
-        for json_word in words:
-            greek_word = json_word["word"]
-            english_text = json_word["text"]
-            # chapter = chapter
-            # verse = verse
-            i = json_word["i"]  # really not that useful, similar to word_index but different for repeated words (i becomes the final word_index)
-            # fisher_section = fisher_section
-            strongs_number = json_word["number"]
-            # strongs_word = strongs_word
-            # strongs_data = strongs_data
-            greek_word = GreekWord(greek_word, english_text, current_chapter, current_verse, word_index, i, current_fisher_section, strongs_number, None, None)
-            greek_words.append(greek_word)
-            word_index += 1
-
-    greek_concordance_json_file.close()
-    return greek_words
-
-
-def find_strongs(all_words: list[GreekWord], strongs_list, print_only=True):
-    greek_word_matches = []
-    hits = 1
-    prior_verse_index = None
-    for word in all_words:
-        found = False
-        for strongs_number in strongs_list:
-            if strongs_number == word.strongs_number and word.verse_index != prior_verse_index:
-                found = True
-                prior_verse_index = word.verse_index
-        if found:
-            if print_only:
-                print(f"    {hits}. {word}")
-                hits += 1
-            else:
-                greek_word_matches.append(word)
-    return greek_word_matches
 
 
 def find_matches(all_words: list[GreekWord], regex_matches, starts_with_matches_only=False, print_only=True):
