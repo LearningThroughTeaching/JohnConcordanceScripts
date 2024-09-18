@@ -125,6 +125,19 @@ loop = asyncio.get_event_loop()
 
 
 # Examples: History of prior jobs:
+
+#  {"bookid": 40, "name": "Matthew", "chronorder": 40, "chapters": 28},
+#  {"bookid": 41, "name": "Mark", "chronorder": 58, "chapters": 16},
+#  {"bookid": 42, "name": "Luke", "chronorder": 52, "chapters": 24},
+#  {"bookid": 43, "name": "John", "chronorder": 66, "chapters": 21},
+#  {"bookid": 44, "name": "Acts", "chronorder": 54, "chapters": 28},
+
+# loop.run_until_complete(main("matthew", 40, 28))
+# loop.run_until_complete(main("mark", 41, 16))
+# loop.run_until_complete(main("luke", 42, 24))
+# # loop.run_until_complete(main("john", 43, 21))
+# loop.run_until_complete(main("acts", 44, 28))
+
 # For {"bookid": 43, "name": "John", "chapters": 21} I ran:
 # loop.run_until_complete(main("john", 43, 21))
 
