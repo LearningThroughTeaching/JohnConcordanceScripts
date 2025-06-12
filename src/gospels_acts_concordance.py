@@ -276,15 +276,23 @@ def load_dictionary(dictionary_filename):
 
 def load_greek_concordance(concordance_filename):
     greek_concordance_json_file = open(f"../data/greek_concordances/{concordance_filename}")
-
+    print(concordance_filename)
     verse_maps = json.load(greek_concordance_json_file)
     greek_words = []
 
+    prior_chapter = 1
+    word_count = 0
     for single_verse in verse_maps:
         current_chapter = int(single_verse["id"][2:5])
         current_verse = int(single_verse["id"][5:])
         current_fisher_section = get_fisher_section(concordance_filename, current_chapter, current_verse)
         words = single_verse["verse"]
+        if current_chapter == prior_chapter:
+            word_count += len(words)
+        else:
+            print(f"Finished chapter ", prior_chapter, "count", word_count)
+            word_count = 0
+            prior_chapter = current_chapter
 
         word_index = 0
         for json_word in words:
@@ -300,6 +308,8 @@ def load_greek_concordance(concordance_filename):
             greek_word = GreekWord(greek_word, english_text, current_chapter, current_verse, word_index, i, current_fisher_section, strongs_number, None, None)
             greek_words.append(greek_word)
             word_index += 1
+
+    print(f"Final chapter ", prior_chapter, "count", word_count)
 
     greek_concordance_json_file.close()
     return greek_words
